@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Alert, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, Alert, TouchableOpacity, Image, Text } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
 import Permissions from '@common/PermissionUtil'
+import { Utility } from '@common'
 
 import { states as mainStates, actions as mainActions } from '@screens/main/state'
 
-const ChargeMapView = ({ navigation }) => {
+const ChargeMapView = props => {
   const dispatch = useDispatch()
   const { myLocation, loading } = useSelector(mainStates)
   const [location, setLocation] = useState(myLocation)
+  const [localMarkerDatas, setLocalMarkerDatas] = useState(props.markerDatas)
 
   useEffect(() => {
     _requestPermission()
   }, [])
+
+  useEffect(() => {
+    if (Utility.isNil(props.markerDatas)) {
+      return
+    }
+    setLocalMarkerDatas(props.markerDatas)
+  }, [props.markerDatas])
 
   const _requestPermission = async () => {
     Permissions.checkPermission()
@@ -72,8 +81,8 @@ const ChargeMapView = ({ navigation }) => {
           toInitialRegion: !location.toInitialRegion,
           latitude: latitude,
           longitude: longitude,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02,
+          latitudeDelta: location.latitudeDelta,
+          longitudeDelta: location.longitudeDelta,
         }
         setLocation(current)
         dispatch(mainActions.setMyLocation(current))
@@ -100,14 +109,36 @@ const ChargeMapView = ({ navigation }) => {
         style={{ flex: 1 }}
         provider={PROVIDER_GOOGLE}
         region={location}
-        onRegionChange={region => {
-          console.log('Region Changed')
-        }}
         onRegionChangeComplete={region => {
-          console.log('Region change complete')
+          console.log('Region change complete : ', region)
+          const current = {
+            toInitialRegion: !location.toInitialRegion,
+            latitude: region.latitude,
+            longitude: region.longitude,
+            latitudeDelta: region.latitudeDelta,
+            longitudeDelta: region.longitudeDelta,
+          }
+          setLocation(current)
+          dispatch(mainActions.setMyLocation(current))
         }}
-        showsUserLocation={true}
-      />
+        showsUserLocation={true}>
+        {/* {_markerDatas()} */}
+        {localMarkerDatas?.map(item => {
+          console.log('item : ', item)
+          return (
+            <Marker
+              key={item.id}
+              coordinate={{ latitude: item.location.latitude, longitude: item.location.longitude }}
+              image={require('@images/marker.png')}
+              identifier={String(item.id)}
+              onPress={e => console.log('press', e.nativeEvent)}
+              onSelect={e => console.log('se', e.nativeEvent)}
+              onDeselect={e => console.log('de', e.nativeEvent)}
+              onCalloutPress={e => console.log('call', e.nativeEvent)}
+            />
+          )
+        })}
+      </MapView>
       <TouchableOpacity
         style={styles.currentLocationContainer}
         activeOpacity={0.5}

@@ -1,6 +1,8 @@
 import React from 'react'
 import 'react-native-gesture-handler'
 
+import '@network/Fetch'
+
 import { Provider } from 'react-redux'
 import createStore from '@stores'
 import { NavigationContainer } from '@react-navigation/native'

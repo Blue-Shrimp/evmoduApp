@@ -27,7 +27,7 @@ const reducers = {
     state.markerDatas = payload
   },
 
-  fetchLocationList: (state, { payload }) => {
+  fetchSearchLocation: (state, { payload }) => {
     state.loading = true
   },
 
@@ -42,8 +42,8 @@ const reducers = {
   onSuccessData: (state, { payload }) => {
     let { type, data } = payload
     switch (type) {
-      case 'fetchLocationList':
-        state.markerDatas = [...state.markerDatas, ...data]
+      case 'fetchSearchLocation':
+        state.markerDatas = data
         break
     }
     state.loading = false

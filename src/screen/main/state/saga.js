@@ -1,11 +1,11 @@
 import { call, put, takeLatest } from 'redux-saga/effects'
 import { actions } from './slice'
-import { fetchMainList } from '@network'
+import { fetchNearestList } from '@network'
 
-export function* fetchLocationList({ payload }) {
+export function* fetchSearchLocation({ payload }) {
   try {
-    const res = yield call(fetchMainList, payload.params)
-    yield put(actions.onSuccessData({ type: 'fetchLocationList', data: res }))
+    const res = yield call(fetchNearestList, payload.params)
+    yield put(actions.onSuccessData({ type: 'fetchSearchLocation', data: res }))
   } catch (error) {
     yield put(actions.onError(error))
   }
@@ -13,5 +13,5 @@ export function* fetchLocationList({ payload }) {
 
 export function* watchSaga() {
   // 액션이 오면 사가함수를 호출합니다.
-  yield takeLatest(actions.fetchLocationList, fetchLocationList)
+  yield takeLatest(actions.fetchSearchLocation, fetchSearchLocation)
 }

@@ -1,18 +1,39 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, SafeAreaView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
+import { Utility } from '@common'
 
 import { ChargeMapView } from '@screens/main/subviews'
 import { states as mainStates, actions as mainActions } from '@screens/main/state'
 
 const MainView = ({ navigation }) => {
   const dispatch = useDispatch()
-  const { myLocation, loading } = useSelector(mainStates)
+  const { myLocation, markerDatas, loading } = useSelector(mainStates)
+
+  useEffect(() => {
+    if (Utility.isNil(myLocation)) {
+      return
+    }
+
+    _fetchSearchLocation(myLocation.latitude, myLocation.longitude)
+  }, [myLocation])
+
+  const _fetchSearchLocation = async (latitude, longitude) => {
+    dispatch(
+      mainActions.fetchSearchLocation({
+        params: {
+          latitude: latitude,
+          longitude: longitude,
+          zoom: 10.0,
+        },
+      }),
+    )
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <ChargeMapView></ChargeMapView>
+        <ChargeMapView markerDatas={markerDatas} />
       </View>
     </SafeAreaView>
   )
