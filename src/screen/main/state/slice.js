@@ -11,6 +11,8 @@ const initialState = {
     longitudeDelta: 0.02,
   },
   markerDatas: [],
+  selectedChargeInfo: {},
+  selectedMarkerState: 'none',
   loading: false,
   error: {
     code: '200',
@@ -25,6 +27,14 @@ const reducers = {
 
   setMarkerDatas: (state, { payload }) => {
     state.markerDatas = payload
+  },
+
+  setSelectedChargeInfo: (state, { payload }) => {
+    state.selectedChargeInfo = payload
+  },
+
+  setSelectedMarkerState: (state, { payload }) => {
+    state.selectedMarkerState = payload
   },
 
   fetchSearchLocation: (state, { payload }) => {

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import { StatusBar } from 'react-native'
 import 'react-native-gesture-handler'
 
 import '@network/Fetch'
@@ -16,21 +17,24 @@ const App = () => {
   const store = createStore()
 
   return (
-    <Provider store={store}>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="TabNavigation"
-            screenOptions={{
-              headerShown: false,
-              gestureEnabled: false,
-              presentation: 'fullScreenModal',
-            }}>
-            <Stack.Screen name="TabNavigation" component={TabNavigation} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </Provider>
+    <Fragment>
+      <StatusBar barStyle={Platform.select({ ios: 'dark-content', android: 'default' })} />
+      <Provider store={store}>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="TabNavigation"
+              screenOptions={{
+                headerShown: false,
+                gestureEnabled: false,
+                presentation: 'fullScreenModal',
+              }}>
+              <Stack.Screen name="TabNavigation" component={TabNavigation} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </Provider>
+    </Fragment>
   )
 }
 

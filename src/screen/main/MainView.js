@@ -3,7 +3,7 @@ import { StyleSheet, View, SafeAreaView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Utility } from '@common'
 
-import { ChargeMapView } from '@screens/main/subviews'
+import { ChargeMapView, BottomSheetView } from '@screens/main/subviews'
 import { states as mainStates, actions as mainActions } from '@screens/main/state'
 
 const MainView = ({ navigation }) => {
@@ -31,11 +31,10 @@ const MainView = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <ChargeMapView markerDatas={markerDatas} />
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <ChargeMapView markerDatas={markerDatas} />
+      <BottomSheetView />
+    </View>
   )
 }
 

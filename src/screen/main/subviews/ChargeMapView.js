@@ -10,7 +10,7 @@ import { states as mainStates, actions as mainActions } from '@screens/main/stat
 
 const ChargeMapView = props => {
   const dispatch = useDispatch()
-  const { myLocation, loading } = useSelector(mainStates)
+  const { myLocation, selectedMarkerState, loading } = useSelector(mainStates)
   const [location, setLocation] = useState(myLocation)
   const [localMarkerDatas, setLocalMarkerDatas] = useState(props.markerDatas)
 
@@ -103,14 +103,77 @@ const ChargeMapView = props => {
     _getCurrentLocation()
   }
 
+  const _onMarkerSelect = event => {
+    if (event.id === undefined) {
+      return
+    }
+
+    let datas = Object.assign([], localMarkerDatas)
+
+    const locationID = Number(event.id)
+
+    let selectMarker = datas.filter(v => v.isSelect === true)
+
+    if (selectMarker.length >= 1) {
+      if (selectMarker[0].id === locationID) {
+        return
+      }
+    }
+
+    let next = datas.filter(marker => marker.id === locationID)
+    if (next.length <= 0) {
+      return
+    }
+
+    next = next[0]
+    next = Object.assign({ ...next }, { isSelect: true })
+
+    let others = localMarkerDatas
+      .filter(marker => next.id !== marker.id)
+      .reduce((result = [], marker, index) => {
+        marker = Object.assign({ ...marker }, { isSelect: false })
+        result.push(marker)
+        return result
+      }, [])
+
+    const initialRegion = {
+      toInitialRegion: !location.toInitialRegion,
+      latitude: next.location.latitude,
+      longitude: next.location.longitude,
+      latitudeDelta: 0.02,
+      longitudeDelta: 0.02,
+    }
+
+    setLocation(initialRegion)
+    dispatch(mainActions.setMarkerDatas([...others, next]))
+    dispatch(mainActions.setSelectedChargeInfo(next))
+    dispatch(mainActions.setSelectedMarkerState('select'))
+  }
+
+  const _onMapTouch = event => {
+    if (Utility.isNil(localMarkerDatas) || event.action === 'marker-press') {
+      return
+    }
+    dispatch(mainActions.setSelectedMarkerState('none'))
+    dispatch(mainActions.setSelectedChargeInfo({}))
+    dispatch(
+      mainActions.setMarkerDatas(
+        localMarkerDatas.reduce((result = [], marker, index) => {
+          marker = Object.assign({ ...marker }, { isSelect: false })
+          result.push(marker)
+          return result
+        }, []),
+      ),
+    )
+  }
+
   return (
     <View style={styles.container}>
       <MapView
         style={{ flex: 1 }}
         provider={PROVIDER_GOOGLE}
         region={location}
-        onRegionChangeComplete={region => {
-          console.log('Region change complete : ', region)
+        onRegionChangeComplete={(region, { isGesture }) => {
           const current = {
             toInitialRegion: !location.toInitialRegion,
             latitude: region.latitude,
@@ -118,23 +181,27 @@ const ChargeMapView = props => {
             latitudeDelta: region.latitudeDelta,
             longitudeDelta: region.longitudeDelta,
           }
-          setLocation(current)
-          dispatch(mainActions.setMyLocation(current))
+          if (isGesture && selectedMarkerState === 'none') {
+            setLocation(current)
+            dispatch(mainActions.setMyLocation(current))
+          }
         }}
-        showsUserLocation={true}>
-        {/* {_markerDatas()} */}
+        onPress={e => {
+          _onMapTouch(e.nativeEvent)
+        }}
+        showsUserLocation={true}
+        showsMyLocationButton={false}
+        toolbarEnabled={false}>
         {localMarkerDatas?.map(item => {
-          console.log('item : ', item)
           return (
             <Marker
               key={item.id}
               coordinate={{ latitude: item.location.latitude, longitude: item.location.longitude }}
-              image={require('@images/marker.png')}
+              image={item.isSelect ? require('@images/markerSel.png') : require('@images/marker.png')}
               identifier={String(item.id)}
-              onPress={e => console.log('press', e.nativeEvent)}
-              onSelect={e => console.log('se', e.nativeEvent)}
-              onDeselect={e => console.log('de', e.nativeEvent)}
-              onCalloutPress={e => console.log('call', e.nativeEvent)}
+              onPress={e => {
+                _onMarkerSelect(e.nativeEvent)
+              }}
             />
           )
         })}

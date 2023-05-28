@@ -5,10 +5,28 @@ import { fetchNearestList } from '@network'
 export function* fetchSearchLocation({ payload }) {
   try {
     const res = yield call(fetchNearestList, payload.params)
-    yield put(actions.onSuccessData({ type: 'fetchSearchLocation', data: res }))
+    const data = yield customizing('fetchSearchLocation', res)
+    yield put(actions.onSuccessData({ type: 'fetchSearchLocation', data: data }))
   } catch (error) {
     yield put(actions.onError(error))
   }
+}
+
+export function* customizing(type, response) {
+  switch (type) {
+    case 'fetchSearchLocation':
+      return customizeSearchLocaiontion(response)
+  }
+}
+
+export const customizeSearchLocaiontion = response => {
+  return response.reduce((result = [], item, index) => {
+    result.push({
+      ...item,
+      isSelect: false,
+    })
+    return result
+  }, [])
 }
 
 export function* watchSaga() {
