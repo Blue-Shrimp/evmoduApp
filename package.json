@@ -7,7 +7,13 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "reinstall": "rm -rf node_modules && yarn install && cd ios && rm -rf Pods && rm -rf Podfile.lock && arch -x86_64 pod install --repo-update && cd ..",
+    "delete-resource": "rm -rf ./android/app/src/main/res/drawable-* && rm -rf ./android/app/src/main/res/raw",
+    "clean-cache": "watchman watch-del-all && rm -rf $TMPDIR/react-native-packager-cache-* && rm -rf $TMPDIR/metro-bundler-cache-* && yarn cache clean && cd ios && rm -rf ~/Library/Developer/Xcode/DerivedData/ && rm -rf ~/Library/Caches/CocoaPods && cd ..",
+    "clean-ios": "cd ios && xcodebuild clean && cd ..",
+    "clean-android": "cd android && ./gradlew clean && cd ..",
+    "clean-all": "yarn delete-resource && yarn clean-cache && yarn reinstall && yarn clean-android && yarn clean-ios && yarn start --reset-cache"
   },
   "dependencies": {
     "react": "18.0.0",
