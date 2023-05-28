@@ -4,8 +4,8 @@ export const sliceName = 'main'
 
 const initialState = {
   myLocation: {
-    latitude: 37.498095,
-    longitude: 127.02751,
+    latitude: 37.566352778,
+    longitude: 126.977952778,
   },
   markerDatas: [],
   loading: false,
