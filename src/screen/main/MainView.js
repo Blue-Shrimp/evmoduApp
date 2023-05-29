@@ -2,19 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, SafeAreaView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Utility, Favorites } from '@common'
+import { Session } from '@network'
 
 import { ChargeMapView, BottomSheetView } from '@screens/main/subviews'
 import { states as mainStates, actions as mainActions } from '@screens/main/state'
+import { states as authStates, actions as authActions } from '@screens/mypage/state'
 
 const MainView = ({ navigation }) => {
   const dispatch = useDispatch()
   const { myLocation, markerDatas, loading } = useSelector(mainStates)
+  const { done, error } = useSelector(authStates)
 
   useEffect(() => {
-    async function fetchData() {
-      dispatch(mainActions.setFavorites(await Favorites.favorites()))
-    }
-    fetchData()
+    _checkSession()
+    _fetchFavorite()
   }, [])
 
   useEffect(() => {
@@ -24,6 +25,16 @@ const MainView = ({ navigation }) => {
 
     _fetchSearchLocation(myLocation.latitude, myLocation.longitude)
   }, [myLocation])
+
+  const _checkSession = async () => {
+    if (await Session.isLogIned()) {
+      await Session.refresh()
+    }
+  }
+
+  const _fetchFavorite = async () => {
+    dispatch(mainActions.setFavorites(await Favorites.favorites()))
+  }
 
   const _fetchSearchLocation = async (latitude, longitude) => {
     dispatch(

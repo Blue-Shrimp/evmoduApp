@@ -11,21 +11,12 @@ const urlHost = 'https://scalar-tc.jp.ngrok.io'
 global.String.prototype.Get = function (params) {
   return FetchUrl('GET', ContentType.Form, this, {}, params)
 }
-/**
- * params: key/value data to add to http body format {key: value, key: value...}
- */
-global.String.prototype.doPut = function (params) {
-  return FetchUrl('PUT', ContentType.Json, this, {}, params)
+global.String.prototype.doPatch = async function (params) {
+  return await Fetch('PATCH', ContentType.Json, this, {}, params)
 }
-/**
- * params: key/value data to add to http body format {key: value, key: value...}
- */
 global.String.prototype.doPost = function (params) {
   return FetchUrl('POST', ContentType.Json, this, {}, params)
 }
-/**
- * params: key/value data to add to http body format {key: value, key: value...}
- */
 global.String.prototype.doDelete = function (params) {
   return FetchUrl('DELETE', ContentType.Json, this, {}, params)
 }
@@ -39,12 +30,15 @@ const FetchUrl = async (method = 'POST', contentType = ContentType.Json, uri, he
   if (method === 'GET') {
     requestUrl = '{0}{1}'.format(urlHost, uri)
     requestUrl = encodeURI('{0}{1}'.format(requestUrl, buildBody('?', params)))
+  } else {
+    requestUrl = '{0}{1}'.format(urlHost, uri)
   }
 
   return await axios({
     method: method,
     url: requestUrl,
     headers: await buildHeader(contentType, headers),
+    data: method === 'GET' ? null : buildPostBody(contentType, params),
   })
     .then(async response => {
       if (response.status === 200) {
@@ -55,7 +49,7 @@ const FetchUrl = async (method = 'POST', contentType = ContentType.Json, uri, he
       }
     })
     .catch(error => {
-      return Promise.reject(error?.message)
+      return Promise.reject({ code: String(error.response.status), message: error?.message })
     })
 }
 
@@ -74,6 +68,18 @@ const buildHeader = async (contentType, params) => {
   console.log(headers)
   console.log('===== Network Header end =====')
   return headers
+}
+
+function buildPostBody(contentType, params) {
+  if (Utility.isNil(params)) {
+    return
+  }
+
+  console.log('===== Network Body ContentType.Json start =====')
+  console.log(JSON.stringify(params))
+  console.log('===== Network Body ContentType.Json end =====')
+
+  return JSON.stringify(params)
 }
 
 function buildBody(prefix, params) {

@@ -12,6 +12,8 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { default as TabNavigation } from '@screens/TabNavigation'
 import { default as FavoriteView } from '@screens/main/subviews/FavoriteView'
+import { default as LoginView } from '@screens/mypage/subviews/LoginView'
+import { default as JoinView } from '@screens/mypage/subviews/JoinView'
 
 const App = () => {
   const Stack = createStackNavigator()
@@ -33,6 +35,8 @@ const App = () => {
               }}>
               <Stack.Screen name="TabNavigation" component={TabNavigation} />
               <Stack.Screen name="FavoriteView" component={FavoriteView} />
+              <Stack.Screen name="LoginView" component={LoginView} />
+              <Stack.Screen name="JoinView" component={JoinView} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>

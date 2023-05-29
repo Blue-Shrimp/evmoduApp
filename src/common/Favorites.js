@@ -14,16 +14,6 @@ const Favorites = {
 
     return favorites.length <= 0 ? initialFavorites : favorites
   },
-  // addWithInfo: location => {
-  //   return FavoriteService.addDealer({ locationID: location.dealershipID })
-  //     .then(response => {
-  //       Favorites.add({ name: location.name, id: location.dealershipID })
-  //       return Promise.resolve(response)
-  //     })
-  //     .catch(error => {
-  //       return Promise.reject(error)
-  //     })
-  // },
   add: async value => {
     if (value === '' || value === null || value === undefined) {
       return false
@@ -51,19 +41,6 @@ const Favorites = {
     favorites.data = (favorites.data || []).filter(v => v.id !== value.id)
     await favoriteItems.setValue(favorites)
     return true
-  },
-  // deleteWithInfo: location => {
-  //   return FavoriteService.deleteDealer(location.dealershipID)
-  //     .then(response => {
-  //       Favorites.delete({ id: location.dealershipID })
-  //     })
-  //     .catch(error => {})
-  // },
-  set: async values => {
-    await favoriteItems.setValue({
-      title: 'Favorites',
-      data: values || [],
-    })
   },
   clear: async () => {
     await favoriteItems.setValue({ ...initialFavorites })
