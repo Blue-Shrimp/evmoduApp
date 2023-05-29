@@ -25,6 +25,14 @@ const ChargeMapView = props => {
     setLocalMarkerDatas(props.markerDatas)
   }, [props.markerDatas])
 
+  useEffect(() => {
+    switch (selectedMarkerState) {
+      case 'none':
+        _onMapTouch()
+        break
+    }
+  }, [selectedMarkerState])
+
   const _requestPermission = async () => {
     Permissions.checkPermission()
       .then(response => {
@@ -151,7 +159,7 @@ const ChargeMapView = props => {
   }
 
   const _onMapTouch = event => {
-    if (Utility.isNil(localMarkerDatas) || event.action === 'marker-press') {
+    if (Utility.isNil(localMarkerDatas) || event?.action === 'marker-press') {
       return
     }
     dispatch(mainActions.setSelectedMarkerState('none'))
@@ -191,6 +199,7 @@ const ChargeMapView = props => {
         }}
         showsUserLocation={true}
         showsMyLocationButton={false}
+        showsCompass={false}
         toolbarEnabled={false}>
         {localMarkerDatas?.map(item => {
           return (

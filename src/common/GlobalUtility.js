@@ -1,3 +1,4 @@
+import { Platform, Linking } from 'react-native'
 import { _ } from 'lodash'
 
 const Utility = {
@@ -19,6 +20,26 @@ const Utility = {
     if (_.isEmpty(string)) return true
 
     return false
+  },
+  call: phone => {
+    if (phone === undefined || phone === null || phone === '') {
+      return false
+    }
+
+    let phoneNumber
+    if (Platform.OS !== 'android') {
+      phoneNumber = `telprompt:${phone}`
+    } else {
+      phoneNumber = `tel:${phone}`
+    }
+
+    return Linking.openURL(phoneNumber)
+      .then(r => {
+        return true
+      })
+      .catch(error => {
+        return false
+      })
   },
 }
 

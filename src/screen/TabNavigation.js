@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator()
 
 const TabNavigation = () => {
   const tabLabel = (focused, color, route) => {
-    return <Text style={{ color: focused ? 'skyblue' : color, fontSize: 11 }}>{route.name}</Text>
+    return <Text style={{ color: focused ? 'dodgerblue' : color, fontSize: 11 }}>{route.name}</Text>
   }
 
   return (
