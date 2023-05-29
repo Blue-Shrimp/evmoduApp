@@ -3,6 +3,7 @@ import { StatusBar } from 'react-native'
 import 'react-native-gesture-handler'
 
 import '@network/Fetch'
+import '@common/AsyncStorage'
 
 import { Provider } from 'react-redux'
 import createStore from '@stores'
@@ -10,6 +11,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { default as TabNavigation } from '@screens/TabNavigation'
+import { default as FavoriteView } from '@screens/main/subviews/FavoriteView'
 
 const App = () => {
   const Stack = createStackNavigator()
@@ -27,9 +29,10 @@ const App = () => {
               screenOptions={{
                 headerShown: false,
                 gestureEnabled: false,
-                presentation: 'fullScreenModal',
+                presentation: 'card',
               }}>
               <Stack.Screen name="TabNavigation" component={TabNavigation} />
+              <Stack.Screen name="FavoriteView" component={FavoriteView} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>

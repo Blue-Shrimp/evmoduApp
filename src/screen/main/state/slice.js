@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { Favorites } from '@common'
 
 export const sliceName = 'main'
 
@@ -13,6 +14,8 @@ const initialState = {
   markerDatas: [],
   selectedChargeInfo: {},
   selectedMarkerState: 'none',
+  favorites: {},
+  detailClick: { isClick: false, id: '' },
   loading: false,
   error: {
     code: '200',
@@ -35,6 +38,14 @@ const reducers = {
 
   setSelectedMarkerState: (state, { payload }) => {
     state.selectedMarkerState = payload
+  },
+
+  setFavorites: (state, { payload }) => {
+    state.favorites = payload
+  },
+
+  setDetailClick: (state, { payload }) => {
+    state.detailClick = payload
   },
 
   fetchSearchLocation: (state, { payload }) => {

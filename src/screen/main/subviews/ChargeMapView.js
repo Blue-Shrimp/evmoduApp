@@ -10,7 +10,7 @@ import { states as mainStates, actions as mainActions } from '@screens/main/stat
 
 const ChargeMapView = props => {
   const dispatch = useDispatch()
-  const { myLocation, selectedMarkerState, loading } = useSelector(mainStates)
+  const { myLocation, selectedMarkerState, detailClick, loading } = useSelector(mainStates)
   const [location, setLocation] = useState(myLocation)
   const [localMarkerDatas, setLocalMarkerDatas] = useState(props.markerDatas)
 
@@ -26,12 +26,27 @@ const ChargeMapView = props => {
   }, [props.markerDatas])
 
   useEffect(() => {
+    if (Utility.isNil(localMarkerDatas)) {
+      return
+    }
+
+    if (detailClick.isClick) {
+      _onMarkerSelect(detailClick)
+      dispatch(mainActions.setDetailClick({ isClick: false, id: '' }))
+    }
+  }, [localMarkerDatas])
+
+  useEffect(() => {
     switch (selectedMarkerState) {
       case 'none':
         _onMapTouch()
         break
     }
   }, [selectedMarkerState])
+
+  useEffect(() => {
+    setLocation(myLocation)
+  }, [myLocation])
 
   const _requestPermission = async () => {
     Permissions.checkPermission()
@@ -223,7 +238,7 @@ const ChargeMapView = props => {
         }}>
         <Image style={styles.currentLoactionIcon} source={require('@images/gps.png')} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.starContainer} activeOpacity={0.5} onPress={() => {}}>
+      <TouchableOpacity style={styles.starContainer} activeOpacity={0.5} onPress={() => props.navigation.navigate('FavoriteView')}>
         <Image style={styles.starIcon} source={require('@images/star.png')} />
       </TouchableOpacity>
     </View>

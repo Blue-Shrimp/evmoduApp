@@ -3,17 +3,24 @@ import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity } from 'rea
 import { useDispatch, useSelector } from 'react-redux'
 import Animated from 'react-native-reanimated'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { Utility } from '@common'
+import { Utility, Favorites } from '@common'
 
 import { states as mainStates, actions as mainActions } from '@screens/main/state'
 
 const BottomSheetView = ({ navigation }) => {
   const dispatch = useDispatch()
-  const { selectedChargeInfo, selectedMarkerState, loading } = useSelector(mainStates)
+  const { selectedChargeInfo, selectedMarkerState, favorites, loading } = useSelector(mainStates)
   const sheetRef = useRef(null)
+  const [isSelected, setIsSelected] = useState(false)
 
   useEffect(() => {
     console.log(selectedChargeInfo)
+    const isFavorite = favorites?.data?.findIndex(v => v.id === selectedChargeInfo.id) < 0 ? false : true
+    if (selectedChargeInfo.is_bookmarked || isFavorite) {
+      setIsSelected(true)
+    } else {
+      setIsSelected(false)
+    }
   }, [selectedChargeInfo])
 
   useEffect(() => {
@@ -104,8 +111,19 @@ const BottomSheetView = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.section1_3}>
-          <TouchableOpacity style={styles.boomarkBtn}>
-            <Image style={styles.starImg} source={require('@images/ligthtgrayStar.png')} />
+          <TouchableOpacity
+            style={styles.boomarkBtn}
+            onPress={async () => {
+              if (isSelected) {
+                await Favorites.delete({ id: selectedChargeInfo.id })
+                setIsSelected(false)
+              } else {
+                await Favorites.add(selectedChargeInfo)
+                setIsSelected(true)
+              }
+              dispatch(mainActions.setFavorites(await Favorites.favorites()))
+            }}>
+            <Image style={styles.starImg} source={isSelected ? require('@images/star.png') : require('@images/ligthtgrayStar.png')} />
             <Text style={styles.boomarkText}>즐겨찾기</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.naviBtn}>

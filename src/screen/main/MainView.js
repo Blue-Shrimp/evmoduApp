@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, SafeAreaView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { Utility } from '@common'
+import { Utility, Favorites } from '@common'
 
 import { ChargeMapView, BottomSheetView } from '@screens/main/subviews'
 import { states as mainStates, actions as mainActions } from '@screens/main/state'
@@ -9,6 +9,13 @@ import { states as mainStates, actions as mainActions } from '@screens/main/stat
 const MainView = ({ navigation }) => {
   const dispatch = useDispatch()
   const { myLocation, markerDatas, loading } = useSelector(mainStates)
+
+  useEffect(() => {
+    async function fetchData() {
+      dispatch(mainActions.setFavorites(await Favorites.favorites()))
+    }
+    fetchData()
+  }, [])
 
   useEffect(() => {
     if (Utility.isNil(myLocation)) {
@@ -32,7 +39,7 @@ const MainView = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ChargeMapView markerDatas={markerDatas} />
+      <ChargeMapView navigation={navigation} markerDatas={markerDatas} />
       <BottomSheetView />
     </View>
   )
