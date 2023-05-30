@@ -19,7 +19,22 @@ const ProfileView = ({ navigation }) => {
   const [passwordChangeBtnActive, setPasswordChangeBtnActive] = useState(false)
 
   useEffect(() => {
+    return () => {
+      dispatch(authActions.onError(null))
+    }
+  }, [])
+
+  useEffect(() => {
     if (error?.code === '500') {
+      if (nameChangeBtnActive) {
+        setNameChangeBtnActive(false)
+        setNameDisable(true)
+        setNameText(profile.username)
+      } else if (passwordChangeBtnActive) {
+        setPasswordChangeBtnActive(false)
+        setPasswordDisable(true)
+        setPasswordText('12341234')
+      }
       _altert('변경 실패했습니다.')
     }
   }, [error])

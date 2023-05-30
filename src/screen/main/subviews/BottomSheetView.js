@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import Animated from 'react-native-reanimated'
 import BottomSheet from '@gorhom/bottom-sheet'
@@ -198,12 +198,14 @@ const BottomSheetView = ({ navigation }) => {
     <BottomSheet
       ref={sheetRef}
       index={-1}
-      snapPoints={['35%', '80%']}
+      snapPoints={[Platform.OS === 'ios' ? '35%' : '40%', '80%']}
       enablePanDownToClose={true}
       handleStyle={styles.header}
       handleIndicatorStyle={styles.panelHandle}
       onClose={() => {
-        dispatch(mainActions.setSelectedMarkerState('none'))
+        if (selectedMarkerState === 'select') {
+          dispatch(mainActions.setSelectedMarkerState('none'))
+        }
       }}>
       {_sheetContent()}
     </BottomSheet>
