@@ -1,4 +1,4 @@
-import { FavoriteService } from '@network'
+import { addBookmark, deleteBookmark } from '@network'
 
 const favoriteItems = 'favorites'
 const initialFavorites = {
@@ -32,6 +32,16 @@ const Favorites = {
 
     return true
   },
+  addWithInfo: station_id => {
+    return addBookmark(station_id)
+      .then(response => {
+        console.log('response : ', response)
+        return true
+      })
+      .catch(error => {
+        return false
+      })
+  },
   delete: async value => {
     let favorites = await favoriteItems.getObject()
     if (favorites === null || favorites === undefined) {
@@ -41,6 +51,16 @@ const Favorites = {
     favorites.data = (favorites.data || []).filter(v => v.id !== value.id)
     await favoriteItems.setValue(favorites)
     return true
+  },
+  deleteWithInfo: station_id => {
+    return deleteBookmark(station_id)
+      .then(response => {
+        console.log('response : ', response)
+        return true
+      })
+      .catch(error => {
+        return false
+      })
   },
   clear: async () => {
     await favoriteItems.setValue({ ...initialFavorites })

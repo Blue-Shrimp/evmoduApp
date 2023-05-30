@@ -8,6 +8,9 @@ const URI = {
     join: '/auth/signup/email',
     userInfo: '/users/me/',
   },
+  Favorite: station_id => ({
+    bookmark: `/stations/${station_id}/bookmark/`,
+  }),
 }
 
 export { URI }

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Animated from 'react-native-reanimated'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { Utility, Favorites } from '@common'
+import { Session } from '@network'
 
 import { states as mainStates, actions as mainActions } from '@screens/main/state'
 
@@ -115,9 +116,15 @@ const BottomSheetView = ({ navigation }) => {
             style={styles.boomarkBtn}
             onPress={async () => {
               if (isSelected) {
+                if (await Session.isLogIned()) {
+                  await Favorites.deleteWithInfo(selectedChargeInfo.id)
+                }
                 await Favorites.delete({ id: selectedChargeInfo.id })
                 setIsSelected(false)
               } else {
+                if (await Session.isLogIned()) {
+                  await Favorites.addWithInfo(selectedChargeInfo.id)
+                }
                 await Favorites.add(selectedChargeInfo)
                 setIsSelected(true)
               }
