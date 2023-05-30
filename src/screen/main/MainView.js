@@ -11,7 +11,7 @@ import { states as authStates, actions as authActions } from '@screens/mypage/st
 const MainView = ({ navigation }) => {
   const dispatch = useDispatch()
   const { myLocation, markerDatas, loading } = useSelector(mainStates)
-  const { done, error } = useSelector(authStates)
+  const { profile, error } = useSelector(authStates)
 
   useEffect(() => {
     _checkSession()
@@ -28,7 +28,10 @@ const MainView = ({ navigation }) => {
 
   const _checkSession = async () => {
     if (await Session.isLogIned()) {
-      await Session.refresh()
+      if (await Session.refresh()) {
+        await dispatch(authActions.getUser())
+        await dispatch(authActions.setAuthLogin(await Session.session()))
+      }
     }
   }
 

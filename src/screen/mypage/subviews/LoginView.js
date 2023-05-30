@@ -25,17 +25,15 @@ const LoginView = ({ navigation }) => {
   useEffect(() => {
     if (auth?.access_token && auth?.refresh_token) {
       Session.update({ ...auth })
+      navigation.pop()
     }
   }, [auth])
 
   useEffect(() => {
-    if (error?.code === '400' || error?.code === '401') {
+    if (error?.code === '401') {
       _altert('존재하지 않는 계정이거나, 비밀번호가 다릅니다.')
     }
   }, [error])
-
-  console.log(auth)
-  console.log(error)
 
   const regex = new RegExp('[a-z0-9]+@[a-z]+.[a-z]{2,3}')
 
@@ -122,7 +120,7 @@ const LoginView = ({ navigation }) => {
           onPress={() => _onLogin()}>
           <Text style={styles.loginText}>로그인</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.joinBtn}>
+        <TouchableOpacity style={styles.joinBtn} onPress={() => navigation.navigate('JoinView')}>
           <Text style={styles.joinText}>회원가입</Text>
         </TouchableOpacity>
       </View>
@@ -143,6 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingLeft: 10,
     marginBottom: 10,
+    color: 'black',
   },
   loginBtn: {
     height: 50,

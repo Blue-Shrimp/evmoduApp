@@ -40,6 +40,6 @@ global.String.prototype.getObject = async function () {
 }
 
 global.String.prototype.clear = async function () {
-  await AsyncStorage.clear(this.valueOf())
+  await AsyncStorage.removeItem(this.valueOf())
   return true
 }

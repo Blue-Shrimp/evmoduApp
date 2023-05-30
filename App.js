@@ -14,6 +14,7 @@ import { default as TabNavigation } from '@screens/TabNavigation'
 import { default as FavoriteView } from '@screens/main/subviews/FavoriteView'
 import { default as LoginView } from '@screens/mypage/subviews/LoginView'
 import { default as JoinView } from '@screens/mypage/subviews/JoinView'
+import { default as ProfileView } from '@screens/mypage/subviews/ProfileView'
 
 const App = () => {
   const Stack = createStackNavigator()
@@ -37,6 +38,7 @@ const App = () => {
               <Stack.Screen name="FavoriteView" component={FavoriteView} />
               <Stack.Screen name="LoginView" component={LoginView} />
               <Stack.Screen name="JoinView" component={JoinView} />
+              <Stack.Screen name="ProfileView" component={ProfileView} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>

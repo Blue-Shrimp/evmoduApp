@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Utility } from '@common'
+import { Session } from './Session'
 
 const ContentType = {
   Form: 'application/x-www-form-urlencoded; charset=utf-8',
@@ -12,7 +13,7 @@ global.String.prototype.Get = function (params) {
   return FetchUrl('GET', ContentType.Form, this, {}, params)
 }
 global.String.prototype.doPatch = async function (params) {
-  return await Fetch('PATCH', ContentType.Json, this, {}, params)
+  return await FetchUrl('PATCH', ContentType.Json, this, {}, params)
 }
 global.String.prototype.doPost = function (params) {
   return FetchUrl('POST', ContentType.Json, this, {}, params)
@@ -63,6 +64,11 @@ const buildHeader = async (contentType, params) => {
   Object.entries(params).map((item, index) => {
     headers[item[0]] = item[1]
   })
+
+  if (await Session.isLogIned()) {
+    const authorization = await Session.authorization()
+    headers = Object.assign(headers, { ...authorization })
+  }
 
   console.log('===== Network Header start =====')
   console.log(headers)

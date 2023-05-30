@@ -5,6 +5,10 @@ const Session = {
   session: async () => {
     return await sessionKey.getObject()
   },
+  email: async () => {
+    const session = await sessionKey.getObject()
+    return session?.email || ''
+  },
   accessToken: async () => {
     const session = await sessionKey.getObject()
     return session?.access_token || ''
@@ -26,6 +30,15 @@ const Session = {
   isLogIned: async () => {
     const session = await sessionKey.getObject()
     return session !== null && (session?.access_token || '') !== '' && (session?.refresh_token || '') !== ''
+  },
+  authorization: async () => {
+    const session = await sessionKey.getObject()
+    let value = {}
+    if ((session?.access_token || '') !== '') {
+      value = { Authorization: 'Bearer ' + session.access_token }
+    }
+
+    return value
   },
   refresh: async () => {
     const token = await Session.refreshToken()
